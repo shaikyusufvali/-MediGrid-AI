@@ -1,0 +1,1931 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediGrid AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #ffffff;
+    --sidebar-bg: #f8f9fb;
+    --primary-color: #2db5b0;
+    --teal-color: #00838f;
+    --blue-btn: #2196f3;
+    --cyan-btn: #00acc1;
+    --text-color: #262730;
+    --border-color: #e0e0e0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 300px;
+    background: var(--sidebar-bg);
+    padding: 3rem 1.5rem;
+    height: 100%;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #444;
+}
+
+.info-box {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.location-btn {
+    background: var(--blue-btn);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.location-btn.active { background: #2e7d32; }
+
+.main-content {
+    flex: 1;
+    padding: 1rem 4rem;
+    overflow-y: auto;
+    position: relative;
+    background: white;
+}
+
+.top-section {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.sub-header {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.upload-zone {
+    border: 2px dashed #00acc1;
+    background: #f0f8ff;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    margin: 0 auto 1rem;
+    max-width: 800px;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+    background: #e0f7fa;
+    border-color: #00838f;
+}
+
+.upload-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #555;
+}
+
+.browse-btn {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.full-width-btn {
+    background: var(--cyan-btn);
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+
+.waiting-state {
+    text-align: center;
+    color: #999;
+    margin-top: 3rem;
+}
+
+.waiting-state h3 {
+    font-size: 1.5rem;
+    color: #bbb;
+}
+
+/* PDF KNOWLEDGE DASHBOARD */
+
+.knowledge-dashboard {
+    display: none;
+    max-width: 900px;
+    margin: 2rem auto;
+    animation: slideUp 0.4s ease;
+}
+
+.success-banner {
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #2e7d32;
+    margin-bottom: 25px;
+}
+
+.success-icon {
+    font-size: 45px;
+}
+
+.success-banner h2 {
+    margin: 0 0 5px;
+    font-size: 1.5rem;
+}
+
+.success-banner p {
+    margin: 0;
+    color: #558b5a;
+}
+
+.knowledge-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.knowledge-card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+}
+
+.pdf-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
+    background: #ffebee;
+    color: #d32f2f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.knowledge-card-title h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.knowledge-card-title p {
+    margin: 4px 0 0;
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.knowledge-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.knowledge-info {
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #edf0f2;
+}
+
+.knowledge-info span {
+    display: block;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.knowledge-info strong {
+    font-size: 1.1rem;
+    color: #263238;
+}
+
+.status-active {
+    color: #2e7d32 !important;
+}
+
+.ai-question-box {
+    background: #e0f7fa;
+    border: 1px solid #b2ebf2;
+    padding: 22px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.ai-question-box h3 {
+    margin: 0 0 8px;
+    color: #006064;
+}
+
+.ai-question-box p {
+    color: #546e7a;
+    margin: 0 0 15px;
+}
+
+.ask-ai-btn {
+    background: #00838f;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ask-ai-btn:hover {
+    background: #006064;
+}
+
+.upload-another-btn {
+    display: block;
+    margin: 20px auto 0;
+    background: white;
+    border: 1px solid #00acc1;
+    color: #00838f;
+    padding: 10px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* PRESCRIPTION DASHBOARD */
+
+.results-container {
+    display: none;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+    padding-bottom: 80px;
+    animation: slideUp 0.4s ease;
+}
+
+.split-layout {
+    display: flex;
+    gap: 2rem;
+    height: 500px;
+}
+
+.col-header {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.left-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+}
+
+.img-viewer {
+    flex: 1;
+    background: #222;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.img-viewer img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.zoom-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.right-col {
+    flex: 1.2;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.panel-nav {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 0 1rem;
+    background: #fafafa;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.panel-content {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.loader-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 8px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+th {
+    text-align: left;
+    padding: 10px;
+    background: #f9f9f9;
+    color: #555;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.patient-card {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.fullscreen-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 5000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+}
+
+.fullscreen-overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+.fullscreen-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: white;
+    margin: 5% auto;
+    padding: 2rem;
+    width: 80%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.chat-widget-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.chat-popup {
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    z-index: 1999;
+    overflow: hidden;
+    border: 1px solid #eee;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.chat-popup.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.chat-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-footer {
+    padding: 0.8rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    outline: none;
+}
+
+.msg {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 85%;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.msg.bot {
+    background: #e8f0fe;
+    color: #333;
+    align-self: flex-start;
+}
+
+.msg.user {
+    background: var(--primary-color);
+    color: white;
+    align-self: flex-end;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    z-index: 3000;
+}
+
+.hidden { display: none !important; }
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+@media(max-width: 900px) {
+    body {
+        overflow: auto;
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
+    .split-layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-col {
+        min-height: 300px;
+    }
+
+    .right-col {
+        min-height: 500px;
+    }
+
+    .knowledge-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-popup {
+        width: calc(100% - 30px);
+        right: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<input type="hidden" id="apiUrl" value="/data_extraction">
+
+<input type="file"
+       id="hiddenFileInput"
+       accept="image/*,.pdf,application/pdf"
+       style="display:none;">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <div class="sidebar-title">✚ MediGrid AI</div>
+
+    <div>
+        <h3>📍 Location Service</h3>
+
+        <div class="info-box">
+            Click below to enable location services.
+        </div>
+
+        <button type="button"
+                class="location-btn"
+                id="locBtn"
+                onclick="requestRealLocation()">
+
+            <span class="material-icons">my_location</span>
+            Find Nearby
+        </button>
+    </div>
+
+    <div>
+        <h3>📘 User Guide</h3>
+
+        <div class="info-box"
+             style="background:none;border:1px solid #7ea2a3;color:#555;">
+
+            1. Enable location for nearby pharmacies.<br>
+            2. Upload prescription image or knowledge PDF.<br>
+            3. AI extracts medicines from prescription images.<br>
+            4. PDF adds medical knowledge to the assistant.<br>
+            5. Download prescription report.<br>
+            6. Save prescription data to database.
+        </div>
+
+        <h3>ℹ️ Disclaimer</h3>
+
+        <div class="info-box"
+             style="background:none;border:1px solid #ddd;color:#555;">
+
+            This AI application provides informational support only.
+            It does not substitute for professional medical advice,
+            diagnosis, or treatment.
+        </div>
+    </div>
+
+</div>
+
+<!-- MAIN CONTENT -->
+
+<div class="main-content">
+
+    <div class="top-section">
+
+        <div class="hero-title">✚ MediGrid AI</div>
+
+        <div class="sub-header">
+            Transform handwritten prescriptions and upload medical knowledge PDFs.
+        </div>
+
+        <!-- UPLOAD ZONE -->
+
+        <div class="upload-zone" id="uploadZone">
+
+            <div class="upload-content">
+
+                <span class="material-icons"
+                      style="font-size:2rem;color:#00acc1;">
+                    cloud_upload
+                </span>
+
+                <div>
+                    <div style="font-weight:600;color:#333;">
+                        Drag and drop or select a file
+                    </div>
+
+                    <div style="font-size:0.8rem;color:#888;margin-top:5px;">
+                        Prescription: PNG, JPG, JPEG |
+                        Knowledge: PDF (max 10 MB)
+                    </div>
+                </div>
+
+                <button type="button" class="browse-btn">
+                    Upload files
+                </button>
+
+            </div>
+        </div>
+
+        <button type="button"
+                class="full-width-btn"
+                onclick="toggleHistory()">
+
+            View History
+        </button>
+
+    </div>
+
+    <!-- WAITING STATE -->
+
+    <div id="waitingState" class="waiting-state">
+
+        <h3>👋 Waiting for upload...</h3>
+
+        <p>Please upload a prescription image or a knowledge PDF.</p>
+
+    </div>
+
+    <!-- NEW PDF KNOWLEDGE DASHBOARD -->
+
+    <div id="knowledgeDashboard" class="knowledge-dashboard">
+
+        <div class="success-banner">
+
+            <span class="material-icons success-icon">
+                check_circle
+            </span>
+
+            <div>
+                <h2>PDF Uploaded Successfully!</h2>
+
+                <p>Your document has been added to the AI Knowledge Base.</p>
+            </div>
+
+        </div>
+
+        <div class="knowledge-card">
+
+            <div class="knowledge-card-title">
+
+                <div class="pdf-icon">
+                    <span class="material-icons">picture_as_pdf</span>
+                </div>
+
+                <div>
+                    <h3 id="pdfFileName">Uploaded Document</h3>
+                    <p>Medical Knowledge Document</p>
+                </div>
+
+            </div>
+
+            <h3>📊 Document Information</h3>
+
+            <div class="knowledge-info-grid">
+
+                <div class="knowledge-info">
+
+                    <span>Upload Status</span>
+
+                    <strong class="status-active">
+                        ● Successful
+                    </strong>
+
+                </div>
+
+                <div class="knowledge-info">
+
+                    <span>Extracted Characters</span>
+
+                    <strong id="pdfCharacters">0</strong>
+
+                </div>
+
+                <div class="knowledge-info">
+
+                    <span>Knowledge Base</span>
+
+                    <strong class="status-active">
+                        ● Added
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <div class="ai-question-box">
+
+                <h3>🤖 Ask MediGrid AI</h3>
+
+                <p>
+                    Your document was uploaded. Open the AI assistant
+                    to ask questions about its contents.
+                </p>
+
+                <button class="ask-ai-btn" onclick="openChatWithQuestion()">
+
+                    <span class="material-icons"
+                          style="vertical-align:middle;font-size:18px;">
+                        chat
+                    </span>
+
+                    Ask AI About This PDF
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <button class="upload-another-btn" onclick="triggerUpload()">
+            + Upload Another Document
+        </button>
+
+    </div>
+
+    <!-- PRESCRIPTION RESULTS -->
+
+    <div id="resultsContainer" class="results-container">
+
+        <div class="split-layout">
+
+            <div class="left-col">
+
+                <div class="col-header">
+                    <span class="material-icons" style="color:#00acc1">
+                        image
+                    </span>
+                    Source Images
+                </div>
+
+                <div class="img-viewer" onclick="openFullscreen()">
+
+                    <img id="dashboardImg" src="" alt="Prescription">
+
+                    <div class="zoom-hint">
+                        Click to Zoom
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="right-col">
+
+                <div class="col-header"
+                     style="padding:0 1rem;margin-top:1rem;">
+
+                    <span class="material-icons" style="color:#ff4b4b">
+                        analytics
+                    </span>
+
+                    Analysis Tab
+
+                </div>
+
+                <div class="loader-overlay" id="dashboardLoader">
+
+                    <div class="spinner"></div>
+
+                    <p>Analyzing Prescription...</p>
+
+                </div>
+
+                <div class="panel-nav">
+
+                    <button class="nav-btn active"
+                            onclick="switchTab('tabData',this)">
+
+                        📄 Extracted Data
+
+                    </button>
+
+                    <button class="nav-btn"
+                            onclick="switchTab('tabWarn',this)">
+
+                        ⚠️ Critical Warnings
+
+                    </button>
+
+                </div>
+
+                <div id="tabData" class="panel-content">
+
+                    <div class="patient-card" id="patientData">
+                        Loading...
+                    </div>
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Dosage</th>
+                                <th>Freq</th>
+                                <th>Duration</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="medTable"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div id="tabWarn" class="panel-content hidden">
+
+                    <div id="warningList"></div>
+
+                </div>
+
+                <div style="padding:1rem;border-top:1px solid #eee;
+                            display:flex;gap:10px;justify-content:flex-end;">
+
+                    <button type="button"
+                            class="browse-btn"
+                            onclick="downloadText()">
+
+                        Download Report (.txt)
+
+                    </button>
+
+                    <button type="button"
+                            class="location-btn"
+                            style="width:auto;background:#2e7d32;"
+                            onclick="saveToDb(event)">
+
+                        Save to DB
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHAT BUTTON -->
+
+<button class="chat-widget-btn" onclick="toggleChat()">
+
+    <span class="material-icons" style="font-size:28px;">
+        support_agent
+    </span>
+
+</button>
+
+<!-- CHAT WINDOW -->
+
+<div class="chat-popup" id="chatPopup">
+
+    <div class="chat-header">
+
+        <span>🤖 MediAI Support Assistant</span>
+
+        <span class="material-icons"
+              style="cursor:pointer"
+              onclick="toggleChat()">
+
+            close
+
+        </span>
+
+    </div>
+
+    <div class="chat-body" id="chatBox">
+
+        <div class="msg bot">
+            Hello! I am your MediGrid assistant. How can I help you?
+        </div>
+
+    </div>
+
+    <div class="chat-footer">
+
+        <input type="text"
+               id="chatInput"
+               class="chat-input"
+               placeholder="Ask a question...">
+
+        <button onclick="sendChat()"
+                style="background:var(--primary-color);color:white;
+                       border:none;border-radius:50%;width:35px;
+                       height:35px;cursor:pointer;">
+
+            <span class="material-icons" style="font-size:16px;">
+                send
+            </span>
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- FULLSCREEN -->
+
+<div id="fullscreenOverlay"
+     class="fullscreen-overlay"
+     onclick="closeFullscreen()">
+
+    <span class="fullscreen-close">×</span>
+
+    <img id="fullscreenImg" src="">
+
+</div>
+
+<!-- HISTORY -->
+
+<div id="historyModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close-modal" onclick="toggleHistory()">×</span>
+
+        <h2>📜 Database History</h2>
+
+        <div style="overflow-x:auto;">
+
+            <table id="historyTable">
+
+                <thead>
+                    <tr id="historyHeader"></tr>
+                </thead>
+
+                <tbody id="historyBody"></tbody>
+
+            </table>
+
+        </div>
+
+        <p id="historyLoading" style="text-align:center;color:#666;">
+            Loading data...
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+const fileInput = document.getElementById('hiddenFileInput');
+const resultsContainer = document.getElementById('resultsContainer');
+const waitingState = document.getElementById('waitingState');
+const knowledgeDashboard = document.getElementById('knowledgeDashboard');
+const dashboardImg = document.getElementById('dashboardImg');
+const loader = document.getElementById('dashboardLoader');
+const apiUrl = document.getElementById('apiUrl').value;
+const uploadZone = document.getElementById('uploadZone');
+
+let currentData = null;
+let userCoordinates = null;
+let currentImageURL = null;
+
+// FILE SELECTION
+
+function triggerUpload() {
+    fileInput.click();
+}
+
+uploadZone.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON') {
+        triggerUpload();
+    }
+});
+
+uploadZone.querySelector('button').addEventListener('click', (e) => {
+    e.stopPropagation();
+    triggerUpload();
+});
+
+// DRAG AND DROP
+
+uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('drag-over');
+});
+
+uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+
+    uploadZone.classList.remove('drag-over');
+
+    const file = e.dataTransfer.files[0];
+
+    if (file) {
+        processFile(file);
+    }
+});
+
+fileInput.addEventListener('change', async (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    await processFile(file);
+
+    fileInput.value = '';
+
+});
+
+// PROCESS FILE
+
+async function processFile(file) {
+
+    const isPDF =
+        file.type === 'application/pdf' ||
+        file.name.toLowerCase().endsWith('.pdf');
+
+    if (isPDF) {
+        await uploadKnowledgePDF(file);
+        return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+        alert("Please select an image or PDF file.");
+        return;
+    }
+
+    await uploadPrescription(file);
+}
+
+// LOCATION
+
+function requestRealLocation() {
+
+    if (!navigator.geolocation) {
+        alert("Geolocation not supported.");
+        return;
+    }
+
+    const btn = document.getElementById('locBtn');
+
+    btn.innerHTML = "Requesting location...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        (pos) => {
+
+            userCoordinates = {
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude
+            };
+
+            btn.innerHTML =
+                '<span class="material-icons">check_circle</span> Location Saved';
+
+            btn.classList.add('active');
+
+            showToast("📍 Location Acquired");
+
+        },
+
+        (err) => {
+
+            alert("Location permission denied or unavailable.");
+
+            btn.innerHTML =
+                '<span class="material-icons">my_location</span> Find Nearby';
+
+        }
+
+    );
+
+}
+
+// PDF KNOWLEDGE UPLOAD
+
+async function uploadKnowledgePDF(file) {
+
+    const maxSize = 10 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+        alert("PDF size must be below 10 MB.");
+        return;
+    }
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+        alert("Please select a valid PDF file.");
+        return;
+    }
+
+    // Hide other dashboard views during upload
+
+    waitingState.style.display = 'none';
+    resultsContainer.style.display = 'none';
+    knowledgeDashboard.style.display = 'none';
+
+    showToast("📘 Uploading PDF...");
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    try {
+
+        const response = await fetch("/upload_knowledge_pdf", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "PDF upload failed");
+        }
+
+        // Display PDF dashboard
+
+        document.getElementById('pdfFileName').textContent =
+            data.filename || file.name;
+
+        document.getElementById('pdfCharacters').textContent =
+            Number(data.characters_extracted || 0).toLocaleString();
+
+        knowledgeDashboard.style.display = 'block';
+
+        waitingState.style.display = 'none';
+        resultsContainer.style.display = 'none';
+
+        showToast("✅ PDF Added Successfully");
+
+        // Scroll to dashboard
+
+        knowledgeDashboard.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+    } catch (error) {
+
+        console.error("PDF Upload Error:", error);
+
+        waitingState.style.display = 'block';
+
+        alert("PDF Upload Failed: " + error.message);
+
+    }
+
+}
+
+// PRESCRIPTION IMAGE UPLOAD
+
+async function uploadPrescription(file) {
+
+    waitingState.style.display = 'none';
+
+    knowledgeDashboard.style.display = 'none';
+
+    resultsContainer.style.display = 'block';
+
+    if (currentImageURL) {
+        URL.revokeObjectURL(currentImageURL);
+    }
+
+    currentImageURL = URL.createObjectURL(file);
+
+    dashboardImg.src = currentImageURL;
+
+    loader.style.display = 'flex';
+
+    currentData = null;
+
+    switchTab('tabData', document.querySelector('.nav-btn'));
+
+    const formData = new FormData();
+
+    formData.append('image', file);
+
+    if (userCoordinates) {
+        formData.append(
+            'user_location',
+            JSON.stringify(userCoordinates)
+        );
+    }
+
+    try {
+
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.detail || "Prescription analysis failed");
+        }
+
+        currentData = data;
+
+        renderDashboard(data);
+
+        loader.style.display = 'none';
+
+        showToast("✅ Prescription Analysis Completed");
+
+        fetchWarnings(data);
+
+    } catch (err) {
+
+        console.error(err);
+
+        loader.style.display = 'none';
+
+        alert("Analysis Failed: " + err.message);
+
+    }
+
+}
+
+// RENDER PRESCRIPTION DATA
+
+function renderDashboard(data) {
+
+    const p = data.patient_info || {};
+
+    const name = p.patient_name || p.Name || 'Unknown';
+    const age = p.age || p.Age || '--';
+    const date = p.Date || '--';
+
+    document.getElementById('patientData').innerHTML = `
+        <span>👤 ${name}</span>
+        <span>📅 ${date}</span>
+        <span>🎂 ${age}</span>
+    `;
+
+    const tbody = document.getElementById('medTable');
+
+    tbody.innerHTML = '';
+
+    (data.Prescription_info || []).forEach(m => {
+
+        const tr = document.createElement('tr');
+
+        const values = [
+            m.medications || 'N/A',
+            m.Dosage || 'N/A',
+            m.Frequency || 'N/A',
+            m.Duration || m.duration || 'Not provided'
+        ];
+
+        values.forEach(value => {
+
+            const td = document.createElement('td');
+
+            td.textContent = value;
+
+            tr.appendChild(td);
+
+        });
+
+        const actionCell = document.createElement('td');
+
+        const link = document.createElement('a');
+
+        link.href = m.Map_link || '#';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = '📍 Map';
+
+        actionCell.appendChild(link);
+
+        tr.appendChild(actionCell);
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
+// CRITICAL WARNINGS
+
+async function fetchWarnings(data) {
+
+    try {
+
+        const cleanData = JSON.parse(JSON.stringify(data));
+
+        if (cleanData.Prescription_info) {
+
+            cleanData.Prescription_info =
+                cleanData.Prescription_info.map(item => ({
+
+                    medications: item.medications,
+                    Dosage: item.Dosage,
+                    Frequency: item.Frequency,
+                    Duration: item.Duration || item.duration || "Not provided",
+                    Map_link: item.Map_link
+
+                }));
+
+        }
+
+        const url = apiUrl.replace(
+            'data_extraction',
+            'critical_warnings'
+        );
+
+        const res = await fetch(url, {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(cleanData)
+
+        });
+
+        const warnings = await res.json();
+
+        const div = document.getElementById('warningList');
+
+        div.innerHTML = '';
+
+        if (!res.ok || warnings.detail) {
+
+            div.textContent =
+                "Backend Validation Error: " +
+                JSON.stringify(warnings.detail);
+
+            return;
+
+        }
+
+        if (!warnings || warnings.length === 0) {
+
+            div.innerHTML = `
+                <div style="color:green;padding:10px;background:#e8f5e9;">
+                    ✅ No critical warnings.
+                </div>
+            `;
+
+            return;
+
+        }
+
+        const list = Array.isArray(warnings)
+            ? warnings
+            : [JSON.stringify(warnings)];
+
+        list.forEach(w => {
+
+            const item = document.createElement('div');
+
+            item.style.cssText =
+                "padding:10px;background:#fff3e0;border-left:4px solid #ff9800;margin-bottom:5px;";
+
+            item.textContent = String(w).replace(/^-/, '').trim();
+
+            div.appendChild(item);
+
+        });
+
+    } catch (e) {
+
+        console.error("Warning Error:", e);
+
+    }
+
+}
+
+// SAVE TO DATABASE
+
+async function saveToDb(event) {
+
+    if (event) event.preventDefault();
+
+    if (!currentData || !currentData.Prescription_info) {
+
+        alert("Please upload a prescription image first.");
+
+        return;
+
+    }
+
+    const payload = {
+
+        patient_info: currentData.patient_info,
+
+        Prescription_info: currentData.Prescription_info.map(item => ({
+
+            medications: item.medications,
+            Dosage: item.Dosage,
+            Frequency: item.Frequency,
+            Duration: item.Duration || item.duration || "Not provided",
+            Map_link: item.Map_link
+
+        }))
+
+    };
+
+    try {
+
+        const res = await fetch("/post_into_db", {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(payload)
+
+        });
+
+        if (!res.ok) {
+            throw new Error("Database save failed");
+        }
+
+        showToast("💾 Saved to Database");
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast("❌ Save Failed: " + error.message);
+
+    }
+
+}
+
+// HISTORY
+
+async function toggleHistory() {
+
+    const modal = document.getElementById('historyModal');
+
+    modal.style.display =
+        modal.style.display === 'block' ? 'none' : 'block';
+
+    if (modal.style.display !== 'block') return;
+
+    const body = document.getElementById('historyBody');
+    const head = document.getElementById('historyHeader');
+
+    const loading = document.getElementById('historyLoading');
+
+    loading.style.display = 'block';
+    loading.textContent = 'Loading data...';
+
+    body.innerHTML = '';
+    head.innerHTML = '';
+
+    try {
+
+        const res = await fetch("/get_Saved_data");
+
+        if (!res.ok) {
+            throw new Error("History request failed");
+        }
+
+        const json = await res.json();
+
+        const data = typeof json === 'string'
+            ? JSON.parse(json)
+            : json;
+
+        loading.style.display = 'none';
+
+        if (!data || data.length === 0) {
+
+            body.innerHTML = '<tr><td>No history.</td></tr>';
+
+            return;
+
+        }
+
+        const keys = Object.keys(data[0]);
+
+        keys.forEach(k => {
+
+            const th = document.createElement('th');
+
+            th.textContent = k;
+
+            head.appendChild(th);
+
+        });
+
+        data.forEach(r => {
+
+            const tr = document.createElement('tr');
+
+            keys.forEach(k => {
+
+                const td = document.createElement('td');
+
+                td.textContent = r[k] ?? '';
+
+                tr.appendChild(td);
+
+            });
+
+            body.appendChild(tr);
+
+        });
+
+    } catch (e) {
+
+        loading.textContent = "Error loading history: " + e.message;
+
+    }
+
+}
+
+window.addEventListener('click', function(e) {
+
+    if (e.target === document.getElementById('historyModal')) {
+        toggleHistory();
+    }
+
+});
+
+// FULLSCREEN IMAGE
+
+function openFullscreen() {
+
+    if (!currentImageURL) return;
+
+    document.getElementById('fullscreenImg').src = currentImageURL;
+
+    document.getElementById('fullscreenOverlay').style.display = 'flex';
+
+}
+
+function closeFullscreen() {
+
+    document.getElementById('fullscreenOverlay').style.display = 'none';
+
+}
+
+// TABS
+
+function switchTab(id, btn) {
+
+    document.querySelectorAll('.panel-content').forEach(d => {
+        d.classList.add('hidden');
+    });
+
+    document.getElementById(id).classList.remove('hidden');
+
+    document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+
+    if (btn) btn.classList.add('active');
+
+}
+
+// TOAST
+
+function showToast(msg) {
+
+    const t = document.createElement('div');
+
+    t.className = 'toast';
+
+    t.textContent = msg;
+
+    document.body.appendChild(t);
+
+    setTimeout(() => t.remove(), 3000);
+
+}
+
+// DOWNLOAD REPORT
+
+function downloadText() {
+
+    if (!currentData) {
+
+        alert("Please upload a prescription first.");
+
+        return;
+
+    }
+
+    let report = "MEDIGRID AI REPORT\n";
+
+    report += "============================================================\n";
+
+    const p = currentData.patient_info || {};
+
+    report += `Patient Name: ${p.patient_name || p.Name || 'N/A'}\n`;
+    report += `Age: ${p.age || p.Age || 'N/A'}\n`;
+    report += `Date: ${p.Date || 'N/A'}\n`;
+
+    report += "============================================================\n\n";
+    report += "MEDICATIONS LIST:\n";
+
+    (currentData.Prescription_info || []).forEach(m => {
+
+        report += `Medication: ${m.medications || 'N/A'}\n`;
+        report += `Dosage: ${m.Dosage || 'N/A'}\n`;
+        report += `Frequency: ${m.Frequency || 'N/A'}\n`;
+        report += `Duration: ${m.Duration || m.duration || 'N/A'}\n`;
+
+        report += "------------------------------------------------------------\n";
+
+    });
+
+    const blob = new Blob([report], {
+        type: 'text/plain'
+    });
+
+    const a = document.createElement('a');
+
+    const url = URL.createObjectURL(blob);
+
+    a.href = url;
+    a.download = "MediGrid_Report.txt";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+}
+
+// CHAT
+
+function toggleChat() {
+
+    document.getElementById('chatPopup').classList.toggle('active');
+
+}
+
+function openChatWithQuestion() {
+
+    document.getElementById('chatPopup').classList.add('active');
+
+    const input = document.getElementById('chatInput');
+
+    input.value =
+        "What is this uploaded PDF about? Explain the important points in simple English.";
+
+    input.focus();
+
+}
+
+async function sendChat() {
+
+    const inp = document.getElementById('chatInput');
+
+    const val = inp.value.trim();
+
+    if (!val) return;
+
+    const box = document.getElementById('chatBox');
+
+    const userMsg = document.createElement('div');
+
+    userMsg.className = 'msg user';
+
+    userMsg.textContent = val;
+
+    box.appendChild(userMsg);
+
+    inp.value = '';
+
+    box.scrollTop = box.scrollHeight;
+
+    try {
+
+        const res = await fetch("/chat", {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                message: val
+            })
+
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.detail || "Chat request failed");
+        }
+
+        const botMsg = document.createElement('div');
+
+        botMsg.className = 'msg bot';
+
+        botMsg.textContent = data.response || "No response received.";
+
+        box.appendChild(botMsg);
+
+        box.scrollTop = box.scrollHeight;
+
+    } catch (e) {
+
+        const errorMsg = document.createElement('div');
+
+        errorMsg.className = 'msg bot';
+
+        errorMsg.textContent = "Error: " + e.message;
+
+        box.appendChild(errorMsg);
+
+        box.scrollTop = box.scrollHeight;
+
+    }
+
+}
+
+document.getElementById('chatInput').addEventListener('keypress', (e) => {
+
+    if (e.key === 'Enter') {
+        sendChat();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
